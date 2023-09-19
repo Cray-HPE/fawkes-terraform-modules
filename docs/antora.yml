@@ -1,0 +1,7 @@
+---
+name: terraform-modules
+title: Terraform Modules
+version: true
+prerelease: true
+nav:
+  - modules/ROOT/nav.adoc
