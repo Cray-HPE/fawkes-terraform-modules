@@ -36,19 +36,13 @@ variable "volume_uri" {
   type        = string
 }
 
-variable "base_volume_name" {
-  description = "Base name of the volume"
-  type        = string
-  default     = null
+variable "volume_size" {
+  description = "Volume size in GB"
+  type        = number
+  default     = 20
 }
 
-variable "base_pool_name" {
-  description = "Base name of the pool"
-  type        = string
-  default     = null
-}
-
-variable "vm_name" {
+variable "name" {
   description = "Name of the VM"
   type        = string
   default     = "kubernetes"
@@ -72,18 +66,19 @@ variable "pool" {
   default     = "default"
 }
 
-variable "system_volume" {
-  description = "System volume size in GB"
-  type        = number
-  default     = 20
-}
-
 variable "interfaces" {
   description = "List of host interfaces that will the VM will receive a macvtap interface for"
   type        = list(string)
+  default = ["eth0"]
 }
 
 variable "libvirt_uri" {
   description = "QEMU System URI"
   type        = string
+  default = "qemu:///system"
+}
+
+variable "role" {
+  type = string
+  default = "worker"
 }
