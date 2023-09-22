@@ -27,6 +27,7 @@ variable "volume_arch" {
 }
 
 variable "volume_format" {
+  default     = "qcow2"
   description = "Format of the volume"
   type        = string
 }
