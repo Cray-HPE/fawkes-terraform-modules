@@ -22,6 +22,7 @@
 # OTHER DEALINGS IN THE SOFTWARE.
 #
 variable "volume_arch" {
+  default     = "x86_64"
   description = "Architecture of the image"
   type        = string
 }

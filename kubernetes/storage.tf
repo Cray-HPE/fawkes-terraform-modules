@@ -43,7 +43,7 @@ resource "libvirt_volume" "volume" {
 }
 
 resource "libvirt_cloudinit_disk" "commoninit" {
-  name           = format("${var.vm_name}_init.iso")
+  name           = format("${var.vm_name}_commoninit.iso")
   pool           = libvirt_pool.base-pool-name.name
   meta_data      = data.template_file.meta_data.rendered
   network_config = data.template_file.network_config.rendered
