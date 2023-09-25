@@ -21,61 +21,7 @@
 # ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
 #
-
-variable "memory" {
-  description = "Memory in MB"
-  type        = string
-  default     = "4096"
-}
-
 variable "name" {
-  description = "Name of the VM"
-  type        = string
-  default     = "kubernetes"
-}
-
-variable "pool" {
-  description = "Name of pool for volumes"
-  type        = string
-  default     = "default"
-}
-
-variable "interfaces" {
-  description = "List of host interfaces that will the VM will receive a macvtap interface for"
-  type        = list(string)
-}
-
-variable "vcpu" {
-  description = "Number of vCPUs"
-  type        = number
-  default     = 2
-}
-
-variable "source_image" {
-  default     = "kubernetes-vm"
-  description = "URI to volumes (without the file extension)"
-  type        = string
-}
-
-variable "volume_arch" {
-  default     = "x86_64"
-  description = "Architecture of the image"
-  type        = string
-}
-
-variable "volume_format" {
-  default     = "qcow2"
-  description = "Format of the volume"
-  type        = string
-}
-
-variable "volume_uri" {
-  description = "URI to volumes (without the file extension)"
-  type        = string
-}
-
-variable "volume_size" {
-  description = "System volume size in GB"
-  type        = number
-  default     = 20
+  type    = string
+  default = "kubernetes"
 }

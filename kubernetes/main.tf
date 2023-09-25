@@ -25,13 +25,50 @@ terraform {
   required_providers {
     libvirt = {
       source  = "dmacvicar/libvirt"
-      version = ">= 0.7.0"
+      version = ">= 0.7.1"
     }
   }
 }
 
-resource "libvirt_domain" "main" {
-  name       = var.vm_name
+# Base OS image.
+resource "libvirt_volume" "base-volume" {
+  name   = format("${var.name}-base.${var.volume_format}")
+  source = format("${var.volume_uri}/${var.source_image}-${var.volume_arch}.${var.volume_format}")
+  pool   = var.pool
+  format = var.volume_format
+}
+
+# Virtual disk for VM.
+resource "libvirt_volume" "volume" {
+  name           = format("${var.name}.${var.volume_format}")
+  base_volume_id = libvirt_volume.base-volume.id
+  pool           = var.pool
+  format         = var.volume_format
+  size           = pow(1024, 3) * var.volume_size
+}
+
+data "template_file" "meta_data" {
+  template = file("${path.module}/templates/meta-data.yml")
+}
+
+data "template_file" "network_config" {
+  template = file("${path.module}/templates/network-config.yml")
+}
+
+data "template_file" "user_data" {
+  template = file("${path.module}/templates/user-data.yml")
+}
+
+resource "libvirt_cloudinit_disk" "commoninit" {
+  name           = "${var.name}_init.iso"
+  pool           = var.pool
+  meta_data      = data.template_file.meta_data.rendered
+  network_config = data.template_file.network_config.rendered
+  user_data      = data.template_file.user_data.rendered
+}
+
+resource "libvirt_domain" "vm" {
+  name       = var.name
   memory     = var.memory
   vcpu       = var.vcpu
   autostart  = true
