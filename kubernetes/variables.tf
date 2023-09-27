@@ -78,7 +78,7 @@ variable "libvirt_uri" {
   default = "qemu:///system"
 }
 
-variable "role" {
-  type = string
-  default = "worker"
+variable "master" {
+  type = bool
+  default = true
 }
