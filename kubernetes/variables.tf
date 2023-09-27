@@ -77,8 +77,8 @@ variable "volume_size" {
 }
 
 ### REQUIRED
-variable "subRole" {
-  description = "The subRole (master or worker) that this module is playing."
+variable "sub_role" {
+  description = "The sub-role (master or worker) that this module is playing."
   type        = string
 }
 
