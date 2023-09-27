@@ -46,6 +46,12 @@ variable "pool" {
   type        = string
 }
 
+variable "source_image" {
+  default     = "kubernetes-vm"
+  description = "URI to volumes (without the file extension or architecture)."
+  type        = string
+}
+
 variable "vcpu" {
   default     = 2
   description = "Number of vCPUs"
@@ -77,6 +83,6 @@ variable "subRole" {
 }
 
 variable "volume_uri" {
-  description = "URI to volumes (without the file extension)"
+  description = "URI to volume (without the filename)."
   type        = string
 }

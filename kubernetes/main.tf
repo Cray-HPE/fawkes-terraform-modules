@@ -1,3 +1,26 @@
+#
+# MIT License
+#
+# (C) Copyright 2023 Hewlett Packard Enterprise Development LP
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom the
+# Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+# OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+# ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+# OTHER DEALINGS IN THE SOFTWARE.
+#
 terraform {
   required_providers {
     libvirt = {
@@ -7,10 +30,10 @@ terraform {
   }
 }
 
-# Base OS image
+# Base OS image.
 resource "libvirt_volume" "base-volume" {
   name   = format("${var.name}-base.${var.volume_format}")
-  source = format("${var.volume_uri}-${var.volume_arch}.${var.volume_format}")
+  source = format("${var.volume_uri}/${var.source_image}-${var.volume_arch}.${var.volume_format}")
   pool   = var.pool
   format = var.volume_format
 }
@@ -24,14 +47,10 @@ resource "libvirt_volume" "volume" {
   size           = pow(1024, 3) * var.volume_size
 }
 
-data "template_file" "user_data" {
-  template = file("${path.module}/templates/user-data.yml")
-}
-
 data "template_file" "meta_data" {
   template = file("${path.module}/templates/meta-data.yml")
   vars     = {
-    hostname   = var.name
+    hostname = var.name
   }
 }
 
@@ -39,20 +58,23 @@ data "template_file" "network_config" {
   template = file("${path.module}/templates/network-config.yml")
 }
 
+data "template_file" "user_data" {
+  template = file("${path.module}/templates/user-data.yml")
+}
+
 resource "libvirt_cloudinit_disk" "commoninit" {
-  name      = "${var.name}_init.iso"
-  pool = var.pool
+  name           = "${var.name}_init.iso"
+  pool           = var.pool
   meta_data      = data.template_file.meta_data.rendered
   network_config = data.template_file.network_config.rendered
   user_data      = data.template_file.user_data.rendered
 }
 
-
 resource "libvirt_domain" "vm" {
-  name   = var.name
-  memory = var.memory
-  vcpu   = var.vcpu
-  autostart = true
+  name       = var.name
+  memory     = var.memory
+  vcpu       = var.vcpu
+  autostart  = true
   qemu_agent = true
 
   cloudinit = libvirt_cloudinit_disk.commoninit.id
